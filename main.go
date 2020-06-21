@@ -47,19 +47,22 @@ func main() {
 func getConfig() (*rest.Config, error) {
 	log.Println("trying InClusterConfig")
 	config, err := rest.InClusterConfig()
-	if err != nil {
-		log.Println(err)
+	if err == nil {
+		log.Println("loaded config successfully")
+		return config, nil
 	}
+	log.Println(err)
 
 	log.Printf("trying %s\n", clientcmd.RecommendedHomeFile)
 	config, err = clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
-	if err != nil {
-		log.Println(err)
-		return nil, err
+	if err == nil {
+		log.Println("loaded config successfully")
+		return config, nil
 	}
+	log.Println(err)
 
-	log.Println("loaded config successfully")
-	return config, nil
+	return nil, err
+
 }
 
 func newClient(config *rest.Config) (kubernetes.Interface, error) {
