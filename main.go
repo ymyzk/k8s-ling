@@ -70,7 +70,7 @@ func newClient(config *rest.Config) (kubernetes.Interface, error) {
 }
 
 func getIngressList(ctx context.Context, client kubernetes.Interface) ([]IngressInfo, error) {
-	ingresses, err := client.ExtensionsV1beta1().Ingresses("").List(ctx, meta_v1.ListOptions{})
+	ingresses, err := client.NetworkingV1().Ingresses("").List(ctx, meta_v1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
