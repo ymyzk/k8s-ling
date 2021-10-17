@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,6 +13,9 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
+
+//go:embed index.html
+var indexHtml string
 
 type App struct {
 	client kubernetes.Interface
@@ -93,7 +97,7 @@ func (app *App) handler(w http.ResponseWriter, r *http.Request) {
 	}
 	sort.Slice(ingresses, func(i, j int) bool { return ingresses[i].Host < ingresses[j].Host })
 
-	tmpl := template.Must(template.ParseFiles("index.html"))
+	tmpl := template.Must(template.New("index").Parse(indexHtml))
 	data := ingresses
 	err = tmpl.Execute(w, data)
 	if err != nil {
